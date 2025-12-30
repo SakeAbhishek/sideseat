@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AbhiGo | Hyper-Local Rides</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -27,10 +26,40 @@
         .text-box p { margin: 0; color: #6b7280; font-size: 0.9rem; }
 
         /* BUTTON */
-        .login-btn { display: block; width: 100%; background-color: #2563eb; color: white; padding: 18px; border-radius: 12px; text-align: center; text-decoration: none; font-weight: 600; font-size: 1.1rem; margin-top: 50px; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+        .login-btn { display: block; width: 100%; background-color: #2563eb; color: white; padding: 18px; border-radius: 12px; text-align: center; text-decoration: none; font-weight: 600; font-size: 1.1rem; margin-top: 50px; cursor: pointer; border: none; }
         
         /* FOOTER */
         .footer { margin-top: 40px; text-align: center; font-size: 0.8rem; color: #9ca3af; }
+
+        /* --- NEW LOGIN POPUP STYLES --- */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center; justify-content: center;
+            z-index: 1000;
+        }
+        .login-box {
+            background: white;
+            padding: 30px;
+            width: 85%;
+            max-width: 350px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .login-box h2 { margin-top: 0; color: #000; }
+        .input-field {
+            width: 90%; padding: 12px; margin: 10px 0;
+            border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
+        }
+        .submit-btn {
+            width: 100%; background: #2563eb; color: white;
+            padding: 12px; border: none; border-radius: 8px;
+            font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+        .close-btn {
+            margin-top: 15px; background: none; border: none; color: #666; cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -41,7 +70,6 @@
         </div>
 
         <h1>Hyper-Local <br> <span class="blue-text">Community</span> <br> Ride-Sharing</h1>
-        
         <p class="subtitle">Connect with nearby riders within 500 meters. Safe, verified, and commission-free.</p>
 
         <div class="feature-item">
@@ -57,10 +85,36 @@
             <div class="text-box"><h3>No Commission</h3><p>Peer-to-peer with zero platform fees</p></div>
         </div>
 
-        <a href="https://wa.me/919999999999?text=I+want+to+join+AbhiGo" class="login-btn">Login to Get Started →</a>
+        <button onclick="openLogin()" class="login-btn">Login to Get Started →</button>
 
         <div class="footer">Founded by Abhishek • Bengaluru</div>
     </div>
+
+    <div id="loginModal" class="modal-overlay">
+        <div class="login-box">
+            <h2>Welcome Back</h2>
+            <p style="color:#666; margin-bottom: 20px;">Enter your details to find a ride.</p>
+            
+            <input type="email" class="input-field" placeholder="Mobile Number or Email">
+            <input type="password" class="input-field" placeholder="Password">
+            
+            <button onclick="loginSuccess()" class="submit-btn">Login</button>
+            <button onclick="closeLogin()" class="close-btn">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function openLogin() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+        function closeLogin() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+        function loginSuccess() {
+            alert("Login Successful! Welcome to AbhiGo.");
+            closeLogin();
+        }
+    </script>
 
 </body>
 </html>
