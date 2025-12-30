@@ -3,185 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AbhiGo | Fast & Stable</title>
+    <title>AbhiGo | Community Connect</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* --- GLOBAL STYLES --- */
-        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #000; overflow-x: hidden; padding-bottom: 80px; }
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
         * { box-sizing: border-box; }
 
-        /* --- 1. LANDING PAGE --- */
-        #landing-page { background: white; min-height: 100vh; padding: 24px; display: block; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; }
-        .header { display: flex; align-items: center; margin-bottom: 40px; margin-top: 20px; }
-        .logo { font-weight: 800; font-size: 1.5rem; }
-        h1 { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
-        .blue-text { color: #2563eb; }
-        .subtitle { font-size: 1.1rem; color: #6b7280; margin-bottom: 40px; }
-        .login-btn { display: block; width: 100%; background-color: #2563eb; color: white; padding: 18px; border-radius: 12px; text-align: center; font-weight: 600; font-size: 1.1rem; border: none; cursor: pointer; margin-top: 40px; box-shadow: 0 4px 10px rgba(37,99,235,0.3); }
+        /* HEADER */
+        .header { background: white; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 800; font-size: 1.4rem; color: #0f172a; }
+        .badge { background: #dbeafe; color: #2563eb; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
 
-        /* --- 2. LOGIN POPUP --- */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(5px); }
-        .login-box { background: white; padding: 30px; width: 85%; max-width: 350px; border-radius: 24px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease; }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .input-field { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 1rem; background: #f9fafb; outline: none; }
-        .submit-btn { width: 100%; background: #2563eb; color: white; padding: 14px; border: none; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        /* TAB SWITCHER */
+        .tabs { display: flex; padding: 15px; gap: 10px; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: white; border-radius: 12px; font-weight: 700; color: #64748b; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.2s; }
+        .tab-btn.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
-        /* --- 3. LOADING SCREEN --- */
-        #loading-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; align-items: center; justify-content: center; flex-direction: column; }
-        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #2563eb; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* CONTENT AREA */
+        .container { padding: 0 15px 100px 15px; }
 
-        /* --- 4. DASHBOARD --- */
-        #dashboard { display: none; width: 100%; }
+        /* DRIVER FORM */
+        .form-box { background: white; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; animation: fadeIn 0.3s; }
+        .input-group { margin-bottom: 15px; }
+        .label { font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 8px; display: block; }
+        .input-field { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 10px; font-size: 1rem; font-weight: 500; outline: none; transition: 0.2s; }
+        .input-field:focus { border-color: #2563eb; background: #fff; }
         
-        .tab-content { display: none; animation: fadeIn 0.3s; }
-        .tab-content.active { display: block; }
+        .price-slider-container { display: flex; justify-content: space-between; align-items: center; background: #f0fdf4; padding: 15px; border-radius: 10px; border: 1px solid #bbf7d0; margin-bottom: 20px; }
+        .price-display { font-size: 1.5rem; font-weight: 800; color: #16a34a; }
+
+        .post-btn { width: 100%; background: #2563eb; color: white; padding: 16px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+
+        /* RIDE LIST (FEED) */
+        .ride-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #e2e8f0; position: relative; animation: slideUp 0.3s; }
+        .route-line { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .dots-container { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .line { width: 2px; height: 25px; background: #e2e8f0; }
+        
+        .locations { display: flex; flex-direction: column; justify-content: space-between; height: 50px; }
+        .loc-text { font-weight: 700; color: #334155; }
+        
+        .ride-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 15px; margin-top: 5px; }
+        .price-tag { background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 8px; font-weight: 800; }
+        
+        .connect-btn { background: black; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        
+        /* CONNECTION MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: flex-end; }
+        .modal-content { background: white; width: 100%; padding: 30px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s; }
+        .contact-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: 700; margin-top: 15px; border: none; cursor: pointer; }
+        .btn-call { background: #22c55e; color: white; }
+        .btn-msg { background: #25D366; color: white; margin-top: 10px; }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .app-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: white; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #eee; }
-        .user-welcome h2 { font-size: 1.4rem; margin: 0; font-weight: 800; }
-
-        /* Simulated Map Style */
-        .map-container { height: 250px; background: #e0f2fe; margin: 0; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .map-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-image: radial-gradient(#60a5fa 2px, transparent 2px); background-size: 30px 30px; opacity: 0.5; }
-        .map-pin { font-size: 3rem; position: relative; z-index: 2; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-
-        .search-area { padding: 20px; background: white; border-radius: 20px 20px 0 0; margin-top: -20px; position: relative; z-index: 10; }
-        .search-bar { background: #f9fafb; padding: 16px; border-radius: 16px; display: flex; align-items: center; gap: 10px; color: #374151; font-weight: 500; margin-bottom: 15px; border: 1px solid #e5e7eb; }
-        
-        .ride-card { padding: 16px; border: 1px solid #e5e7eb; background: white; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .price-tag { background: #eff6ff; color: #2563eb; padding: 8px 12px; border-radius: 8px; font-weight: 700; }
-
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-around; padding: 12px 0; z-index: 500; padding-bottom: 20px; }
-        .nav-item { text-align: center; color: #9ca3af; font-size: 0.75rem; width: 33%; cursor: pointer; }
-        .nav-item.active { color: #2563eb; font-weight: 600; }
-        .nav-icon { font-size: 1.5rem; display: block; margin-bottom: 4px; }
-        
-        /* Account & Activity */
-        .activity-item { background: white; padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .menu-item { background: white; padding: 18px 20px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; font-weight: 500; cursor: pointer; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="landing-page">
-        <div class="header"><div class="logo">🚖 AbhiGo</div></div>
-        <h1>Hyper-Local <br> <span class="blue-text">Community</span> <br> Rides</h1>
-        <p class="subtitle">Connect with nearby riders. Safe, verified, and commission-free.</p>
-        <button onclick="openLogin()" class="login-btn">Login to Get Started →</button>
+    <div class="header">
+        <div class="logo">AbhiGo</div>
+        <div class="badge">Live Network</div>
     </div>
 
-    <div id="loginModal" class="modal-overlay">
-        <div class="login-box">
-            <h2>Welcome Back</h2>
-            <p style="color:#666; margin-bottom: 20px;">Enter your details</p>
-            <input type="number" class="input-field" placeholder="Mobile Number" value="9876543210">
-            <input type="password" id="userPassword" class="input-field" placeholder="Password (Use: 123456)">
-            <button onclick="startApp()" class="submit-btn">Login Securely</button>
-            <button onclick="closeLogin()" style="margin-top:15px; border:none; background:none; color:#9ca3af; cursor:pointer;">Cancel</button>
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('rider')" id="tab-rider">Find Lift 🙋‍♂️</button>
+        <button class="tab-btn" onclick="switchTab('driver')" id="tab-driver">Offer Lift 🚗</button>
     </div>
 
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <p style="font-weight:600; color:#4b5563;">Connecting...</p>
-    </div>
-
-    <div id="dashboard">
+    <div class="container">
         
-        <div id="tab-home" class="tab-content active">
-            <div class="app-header">
-                <div class="user-welcome"><h2>Hi, Abhi 👋</h2><p>Bengaluru, Karnataka</p></div>
-                <div style="background:#f3f4f6; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;">👤</div>
-            </div>
-            
-            <div class="map-container">
-                <div class="map-bg"></div>
-                <div class="map-pin">📍</div>
-            </div>
-
-            <div class="search-area">
-                <div class="search-bar"><span style="color:#22c55e;">●</span> Current Location</div>
-                <div class="search-bar"><span style="color:#ef4444;">●</span> Where to?</div>
+        <div id="view-driver" style="display: none;">
+            <div class="form-box">
+                <h2 style="margin-top:0;">Post a Ride</h2>
                 
-                <div style="font-weight: 700; margin-bottom: 10px;">Nearby Rides</div>
-                <div class="ride-card">
-                    <div style="display:flex; gap:12px; align-items:center;">
-                        <div style="background:#e0f2fe; padding:10px; border-radius:50%;">🏍️</div>
-                        <div><h4>Ramesh K.</h4><p style="font-size:0.8rem; color:#666;">2 mins away</p></div>
-                    </div>
-                    <div class="price-tag">₹40</div>
+                <div class="input-group">
+                    <span class="label">FROM (Start Point)</span>
+                    <input type="text" id="input-from" class="input-field" placeholder="Ex: BEL Circle">
+                </div>
+                
+                <div class="input-group">
+                    <span class="label">TO (Destination)</span>
+                    <input type="text" id="input-to" class="input-field" placeholder="Ex: Yelahanka">
+                </div>
+
+                <div class="price-slider-container">
+                    <span style="font-weight:600; color:#166534;">Ask Price:</span>
+                    <span class="price-display" id="price-val">₹40</span>
+                </div>
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <button onclick="adjustPrice(-10)" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:white;">- ₹10</button>
+                    <button onclick="adjustPrice(10)" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:white;">+ ₹10</button>
+                </div>
+
+                <button class="post-btn" onclick="postRide()">Post Ride Now</button>
+            </div>
+        </div>
+
+        <div id="view-rider">
+            <h3 style="color:#64748b; margin-top:0;">Available Rides Nearby</h3>
+            <div id="rides-list">
+                </div>
+        </div>
+
+    </div>
+
+    <div id="connectModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-top:0;">You are Connected! 🎉</h2>
+            <p style="color:#666; margin-bottom:20px;">The driver has been notified. Contact them directly to coordinate the pickup.</p>
+            
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+                <div style="width:50px; height:50px; background:#ddd; border-radius:50%; overflow:hidden;">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" style="width:100%; height:100%;">
+                </div>
+                <div>
+                    <h3 style="margin:0;">Ramesh K.</h3>
+                    <div style="font-size:0.9rem; color:#666;">Going your way</div>
                 </div>
             </div>
-        </div>
 
-        <div id="tab-activity" class="tab-content">
-            <div class="app-header"><h2>Your Activity</h2></div>
-            <div class="activity-item">
-                <div><h4>Trip to HSR Layout</h4><p style="color:#666; font-size:0.8rem;">Yesterday • 5:30 PM</p></div>
-                <div style="font-weight:bold;">₹120</div>
-            </div>
-        </div>
-
-        <div id="tab-account" class="tab-content">
-            <div class="app-header"><h2>Account</h2></div>
-            <div style="padding: 20px; text-align: center;">
-                <div style="width:80px; height:80px; background:#f3f4f6; border-radius:50%; margin:0 auto 10px auto; display:flex; align-items:center; justify-content:center; font-size:2rem;">👤</div>
-                <h3>Abhishek</h3>
-                <p style="color:#666;">+91 98765 43210</p>
-            </div>
-            <div class="menu-item"><span>Your Rides</span><span>›</span></div>
-            <div class="menu-item"><span>Settings</span><span>›</span></div>
-            <div class="menu-item" style="color:red;" onclick="location.reload()"><span>Log Out</span><span>›</span></div>
-        </div>
-
-        <div class="bottom-nav">
-            <div class="nav-item active" onclick="switchTab('home', this)">
-                <span class="nav-icon">🏠</span>Home
-            </div>
-            <div class="nav-item" onclick="switchTab('activity', this)">
-                <span class="nav-icon">⚡</span>Activity
-            </div>
-            <div class="nav-item" onclick="switchTab('account', this)">
-                <span class="nav-icon">⚙️</span>Account
-            </div>
+            <button class="contact-btn btn-call" onclick="window.location.href='tel:9876543210'">📞 Call Driver</button>
+            <button class="contact-btn btn-msg" onclick="alert('Opening WhatsApp...')">💬 WhatsApp</button>
+            <button onclick="closeModal()" style="width:100%; padding:15px; background:white; border:none; color:#666; margin-top:10px; font-weight:600;">Close</button>
         </div>
     </div>
 
     <script>
-        function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
-        function closeLogin() { document.getElementById('loginModal').style.display = 'none'; }
+        var currentPrice = 40;
 
-        function startApp() {
-            var pass = document.getElementById("userPassword").value;
-            // Robust check: accepts 123456 OR blank to prevent getting stuck
-            if (pass == "123456" || pass == "") {
-                document.getElementById('loginModal').style.display = 'none';
-                document.getElementById('loading-screen').style.display = 'flex';
-                
-                // Fast load (1 second)
-                setTimeout(function() {
-                    document.getElementById('landing-page').style.display = 'none';
-                    document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('dashboard').style.display = 'block';
-                }, 1000);
-            } else {
-                alert("❌ Wrong Password! Try: 123456");
+        // FAKE DATABASE (Simulated rides for the demo)
+        var rides = [
+            { from: "Yeshwanthpur", to: "Mathikere", price: 30, name: "Suresh" },
+            { from: "Hebbal", to: "Manyata Tech Park", price: 40, name: "Anand" }
+        ];
+
+        // 1. LOAD RIDES ON START
+        window.onload = function() {
+            renderRides();
+        }
+
+        // 2. SWITCH TABS
+        function switchTab(role) {
+            document.getElementById('tab-rider').classList.remove('active');
+            document.getElementById('tab-driver').classList.remove('active');
+            document.getElementById('tab-' + role).classList.add('active');
+
+            document.getElementById('view-rider').style.display = role === 'rider' ? 'block' : 'none';
+            document.getElementById('view-driver').style.display = role === 'driver' ? 'block' : 'none';
+        }
+
+        // 3. ADJUST PRICE LOGIC
+        function adjustPrice(amount) {
+            currentPrice += amount;
+            if(currentPrice < 20) currentPrice = 20; // Minimum limit
+            document.getElementById('price-val').innerText = "₹" + currentPrice;
+        }
+
+        // 4. POST RIDE (DRIVER ACTION)
+        function postRide() {
+            var fromLoc = document.getElementById('input-from').value;
+            var toLoc = document.getElementById('input-to').value;
+
+            if(fromLoc === "" || toLoc === "") {
+                alert("Please enter From and To locations!");
+                return;
             }
-        }
 
-        function switchTab(tabName, element) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            // Show new tab
-            document.getElementById('tab-' + tabName).classList.add('active');
+            // Create new ride object
+            var newRide = {
+                from: fromLoc,
+                to: toLoc,
+                price: currentPrice,
+                name: "You (Abhi)"
+            };
+
+            // Add to list
+            rides.unshift(newRide); // Add to top
             
-            // Update icons
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            element.classList.add('active');
+            // Switch to Rider view to see it
+            alert("✅ Ride Posted! Switching to Feed view...");
+            switchTab('rider');
+            renderRides();
+            
+            // Clear inputs
+            document.getElementById('input-from').value = "";
+            document.getElementById('input-to').value = "";
         }
-    </script>
 
+        // 5. RENDER LIST
+        function renderRides() {
+            var container = document.getElementById('rides-list');
+            container.innerHTML = ""; // Clear list
+
+            rides.forEach(function(ride) {
+                var card = `
+                <div class="ride-card">
+                    <div style="font-size:0.8rem; font-weight:700; color:#94a3b8; margin-bottom:10px;">DRIVER: ${ride.name}</div>
+                    <div class="route-line">
+                        <div class="dots-container">
+                            <div class="dot" style="background:#22c55e;"></div>
+                            <div class="line"></div>
+                            <div class="dot" style="background:#ef4444;"></div>
+                        </div>
+                        <div class="locations">
+                            <div class="loc-text">${ride.from}</div>
+                            <div class="loc-text">${ride.to}</div>
+                        </div>
+                    </div>
+                    <div class="ride-footer">
+                        <div class="price-tag">Ask: ₹${ride.price}</div>
+                        <button class="connect-btn" onclick="openConnectModal()">Connect</button>
+                    </div>
+                </div>`;
+                container.innerHTML += card;
+            });
+        }
+
+        // 6. CONNECTION MODALS
+        function openConnectModal() {
+            document.getElementById('connectModal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('connectModal').style.display = 'none';
+        }
+
+    </script>
 </body>
 </html>
+
