@@ -2,233 +2,245 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AbhiGo | Community Connect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AbhiGo | Full App</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <style>
-        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; overflow: hidden; }
         * { box-sizing: border-box; }
 
-        /* HEADER */
-        .header { background: white; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        /* HEADER & PROFILE */
+        .header { background: white; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .logo { font-weight: 800; font-size: 1.4rem; color: #0f172a; }
-        .badge { background: #dbeafe; color: #2563eb; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
-
-        /* TAB SWITCHER */
-        .tabs { display: flex; padding: 15px; gap: 10px; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: white; border-radius: 12px; font-weight: 700; color: #64748b; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.2s; }
-        .tab-btn.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-
-        /* CONTENT AREA */
-        .container { padding: 0 15px 100px 15px; }
-
-        /* DRIVER FORM */
-        .form-box { background: white; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; animation: fadeIn 0.3s; }
-        .input-group { margin-bottom: 15px; }
-        .label { font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 8px; display: block; }
-        .input-field { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 10px; font-size: 1rem; font-weight: 500; outline: none; transition: 0.2s; }
-        .input-field:focus { border-color: #2563eb; background: #fff; }
         
-        .price-slider-container { display: flex; justify-content: space-between; align-items: center; background: #f0fdf4; padding: 15px; border-radius: 10px; border: 1px solid #bbf7d0; margin-bottom: 20px; }
-        .price-display { font-size: 1.5rem; font-weight: 800; color: #16a34a; }
+        /* PROFILE PHOTO UPLOAD */
+        .profile-container { position: relative; width: 40px; height: 40px; }
+        .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0; cursor: pointer; }
+        .cam-icon { position: absolute; bottom: -2px; right: -2px; background: #2563eb; color: white; border-radius: 50%; width: 15px; height: 15px; font-size: 10px; display: flex; align-items: center; justify-content: center; pointer-events: none; }
 
-        .post-btn { width: 100%; background: #2563eb; color: white; padding: 16px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        /* TABS */
+        .tabs { display: flex; padding: 10px 15px; gap: 10px; background: white; border-bottom: 1px solid #eee; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: #f1f5f9; border-radius: 10px; font-weight: 700; color: #64748b; cursor: pointer; }
+        .tab-btn.active { background: #0f172a; color: white; }
 
-        /* RIDE LIST (FEED) */
-        .ride-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #e2e8f0; position: relative; animation: slideUp 0.3s; }
-        .route-line { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .dots-container { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .line { width: 2px; height: 25px; background: #e2e8f0; }
-        
-        .locations { display: flex; flex-direction: column; justify-content: space-between; height: 50px; }
-        .loc-text { font-weight: 700; color: #334155; }
-        
-        .ride-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 15px; margin-top: 5px; }
-        .price-tag { background: #dcfce7; color: #166534; padding: 6px 12px; border-radius: 8px; font-weight: 800; }
-        
-        .connect-btn { background: black; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        
-        /* CONNECTION MODAL */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: flex-end; }
-        .modal-content { background: white; width: 100%; padding: 30px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s; }
-        .contact-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; border-radius: 12px; font-size: 1.1rem; font-weight: 700; margin-top: 15px; border: none; cursor: pointer; }
-        .btn-call { background: #22c55e; color: white; }
-        .btn-msg { background: #25D366; color: white; margin-top: 10px; }
+        /* MAIN CONTENT */
+        .screen { height: calc(100vh - 130px); overflow-y: auto; padding: 15px; padding-bottom: 100px; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* RIDE CARD */
+        .ride-card { background: white; padding: 15px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #e2e8f0; animation: slideUp 0.3s; }
+        .footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
+        .price { background: #dcfce7; color: #166534; padding: 5px 10px; border-radius: 6px; font-weight: 800; }
+        .connect-btn { background: black; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+        /* MODAL (Common for Connect, Payment, Chat) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; align-items: flex-end; }
+        .modal-content { background: white; width: 100%; padding: 25px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s; display: flex; flex-direction: column; gap: 10px; }
+        
+        /* CHAT UI */
+        #chat-box { height: 200px; background: #f1f5f9; border-radius: 10px; overflow-y: auto; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 0.9rem; }
+        .msg-in { background: white; align-self: flex-start; border: 1px solid #e2e8f0; }
+        .msg-out { background: #dbeafe; color: #1e40af; align-self: flex-end; }
+
+        /* PAYMENT UI */
+        .pay-btn { width: 100%; background: #16a34a; color: white; padding: 15px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .success-checkmark { display: none; text-align: center; color: #16a34a; font-weight: 800; font-size: 1.2rem; animation: popIn 0.5s; }
+
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* DRIVER POSTING FORM */
+        .input-field { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 10px; font-size: 1rem; margin-bottom: 15px; outline: none; }
+        .post-btn { width: 100%; background: #2563eb; color: white; padding: 16px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
+    <input type="file" id="photo-upload" accept="image/*" style="display: none;" onchange="loadPhoto(event)">
+    <audio id="alarm-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
     <div class="header">
         <div class="logo">AbhiGo</div>
-        <div class="badge">Live Network</div>
+        <div class="profile-container" onclick="document.getElementById('photo-upload').click()">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" id="my-profile" class="profile-img">
+            <div class="cam-icon">📷</div>
+        </div>
     </div>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('rider')" id="tab-rider">Find Lift 🙋‍♂️</button>
-        <button class="tab-btn" onclick="switchTab('driver')" id="tab-driver">Offer Lift 🚗</button>
+        <button class="tab-btn active" onclick="switchTab('rider')" id="btn-rider">Find Lift 🙋‍♂️</button>
+        <button class="tab-btn" onclick="switchTab('driver')" id="btn-driver">Offer Lift 🚗</button>
     </div>
 
-    <div class="container">
-        
-        <div id="view-driver" style="display: none;">
-            <div class="form-box">
-                <h2 style="margin-top:0;">Post a Ride</h2>
-                
-                <div class="input-group">
-                    <span class="label">FROM (Start Point)</span>
-                    <input type="text" id="input-from" class="input-field" placeholder="Ex: BEL Circle">
-                </div>
-                
-                <div class="input-group">
-                    <span class="label">TO (Destination)</span>
-                    <input type="text" id="input-to" class="input-field" placeholder="Ex: Yelahanka">
-                </div>
-
-                <div class="price-slider-container">
-                    <span style="font-weight:600; color:#166534;">Ask Price:</span>
-                    <span class="price-display" id="price-val">₹40</span>
-                </div>
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <button onclick="adjustPrice(-10)" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:white;">- ₹10</button>
-                    <button onclick="adjustPrice(10)" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ddd; background:white;">+ ₹10</button>
-                </div>
-
-                <button class="post-btn" onclick="postRide()">Post Ride Now</button>
-            </div>
-        </div>
-
-        <div id="view-rider">
-            <h3 style="color:#64748b; margin-top:0;">Available Rides Nearby</h3>
-            <div id="rides-list">
-                </div>
-        </div>
-
+    <div id="view-rider" class="screen">
+        <div id="ride-list"></div>
     </div>
 
-    <div id="connectModal" class="modal">
+    <div id="view-driver" class="screen" style="display: none;">
+        <div style="background:white; padding:20px; border-radius:16px; border:1px solid #e2e8f0;">
+            <h2 style="margin-top:0;">Post a Ride</h2>
+            <input type="text" id="from-loc" class="input-field" placeholder="From (Start Point)">
+            <input type="text" id="to-loc" class="input-field" placeholder="To (Destination)">
+            <button class="post-btn" onclick="postRide()">Post Ride</button>
+        </div>
+    </div>
+
+    <div id="connect-modal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-top:0;">You are Connected! 🎉</h2>
-            <p style="color:#666; margin-bottom:20px;">The driver has been notified. Contact them directly to coordinate the pickup.</p>
+            <h2 style="margin:0;">Ramesh K.</h2>
+            <p style="color:#666; margin:0 0 15px 0;">Going to Yelahanka • ₹40</p>
             
-            <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
-                <div style="width:50px; height:50px; background:#ddd; border-radius:50%; overflow:hidden;">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" style="width:100%; height:100%;">
-                </div>
-                <div>
-                    <h3 style="margin:0;">Ramesh K.</h3>
-                    <div style="font-size:0.9rem; color:#666;">Going your way</div>
-                </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;">
+                <button onclick="openChat()" style="padding:15px; background:#25D366; color:white; border:none; border-radius:12px; font-weight:700;">💬 Chat</button>
+                <button onclick="window.location.href='tel:999'" style="padding:15px; background:#2563eb; color:white; border:none; border-radius:12px; font-weight:700;">📞 Call</button>
+            </div>
+            
+            <button onclick="openPayment()" class="pay-btn" style="margin-top:10px;">
+                <span>⚡ Pay ₹40 Now</span>
+            </button>
+            
+            <button onclick="closeModal('connect-modal')" style="width:100%; padding:15px; background:white; color:#666; border:none; margin-top:5px;">Close</button>
+        </div>
+    </div>
+
+    <div id="chat-modal" class="modal">
+        <div class="modal-content" style="height: 60vh; justify-content: flex-end;">
+            <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
+                <b>Chat with Ramesh</b>
+                <span onclick="closeModal('chat-modal')" style="cursor:pointer;">✖</span>
+            </div>
+            
+            <div id="chat-box">
+                <div class="msg msg-in">Hi! Where exactly are you?</div>
+            </div>
+            
+            <div style="display:flex; gap:10px; width:100%;">
+                <input type="text" id="msg-input" class="input-field" style="margin:0;" placeholder="Type message...">
+                <button onclick="sendMsg()" style="background:#2563eb; color:white; border:none; padding:0 20px; border-radius:10px;">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pay-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin:0;">Payment</h2>
+            <p>Paying ₹40 to Ramesh K.</p>
+            
+            <div id="pay-loading" style="display:none; text-align:center; padding:20px;">
+                <div style="font-size:2rem;">🔄</div>
+                <p>Processing UPI...</p>
             </div>
 
-            <button class="contact-btn btn-call" onclick="window.location.href='tel:9876543210'">📞 Call Driver</button>
-            <button class="contact-btn btn-msg" onclick="alert('Opening WhatsApp...')">💬 WhatsApp</button>
-            <button onclick="closeModal()" style="width:100%; padding:15px; background:white; border:none; color:#666; margin-top:10px; font-weight:600;">Close</button>
+            <div id="pay-success" class="success-checkmark">
+                <div style="font-size:3rem; margin-bottom:10px;">✅</div>
+                Payment Successful!
+            </div>
+
+            <button id="confirm-pay-btn" onclick="processPayment()" class="pay-btn">Confirm Pay</button>
+            <button onclick="closeModal('pay-modal')" style="width:100%; padding:15px; background:white; color:#666; border:none;">Cancel</button>
         </div>
     </div>
 
     <script>
-        var currentPrice = 40;
-
-        // FAKE DATABASE (Simulated rides for the demo)
+        // DATA
         var rides = [
             { from: "Yeshwanthpur", to: "Mathikere", price: 30, name: "Suresh" },
             { from: "Hebbal", to: "Manyata Tech Park", price: 40, name: "Anand" }
         ];
 
-        // 1. LOAD RIDES ON START
-        window.onload = function() {
-            renderRides();
+        window.onload = function() { renderRides(); }
+
+        // 1. UPLOAD PROFILE PHOTO
+        function loadPhoto(event) {
+            var image = document.getElementById('my-profile');
+            image.src = URL.createObjectURL(event.target.files[0]);
         }
 
-        // 2. SWITCH TABS
+        // 2. TABS & POSTING
         function switchTab(role) {
-            document.getElementById('tab-rider').classList.remove('active');
-            document.getElementById('tab-driver').classList.remove('active');
-            document.getElementById('tab-' + role).classList.add('active');
-
-            document.getElementById('view-rider').style.display = role === 'rider' ? 'block' : 'none';
-            document.getElementById('view-driver').style.display = role === 'driver' ? 'block' : 'none';
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-'+role).classList.add('active');
+            document.getElementById('view-rider').style.display = role==='rider'?'block':'none';
+            document.getElementById('view-driver').style.display = role==='driver'?'block':'none';
         }
 
-        // 3. ADJUST PRICE LOGIC
-        function adjustPrice(amount) {
-            currentPrice += amount;
-            if(currentPrice < 20) currentPrice = 20; // Minimum limit
-            document.getElementById('price-val').innerText = "₹" + currentPrice;
-        }
-
-        // 4. POST RIDE (DRIVER ACTION)
         function postRide() {
-            var fromLoc = document.getElementById('input-from').value;
-            var toLoc = document.getElementById('input-to').value;
-
-            if(fromLoc === "" || toLoc === "") {
-                alert("Please enter From and To locations!");
-                return;
-            }
-
-            // Create new ride object
-            var newRide = {
-                from: fromLoc,
-                to: toLoc,
-                price: currentPrice,
-                name: "You (Abhi)"
-            };
-
-            // Add to list
-            rides.unshift(newRide); // Add to top
+            var f = document.getElementById('from-loc').value;
+            var t = document.getElementById('to-loc').value;
+            if(!f || !t) return alert("Enter locations!");
             
-            // Switch to Rider view to see it
-            alert("✅ Ride Posted! Switching to Feed view...");
+            rides.unshift({ from: f, to: t, price: 40, name: "You (Abhi)" });
+            alert("Ride Posted!");
             switchTab('rider');
             renderRides();
-            
-            // Clear inputs
-            document.getElementById('input-from').value = "";
-            document.getElementById('input-to').value = "";
         }
 
-        // 5. RENDER LIST
         function renderRides() {
-            var container = document.getElementById('rides-list');
-            container.innerHTML = ""; // Clear list
-
-            rides.forEach(function(ride) {
-                var card = `
+            var html = "";
+            rides.forEach(r => {
+                html += `
                 <div class="ride-card">
-                    <div style="font-size:0.8rem; font-weight:700; color:#94a3b8; margin-bottom:10px;">DRIVER: ${ride.name}</div>
-                    <div class="route-line">
-                        <div class="dots-container">
-                            <div class="dot" style="background:#22c55e;"></div>
-                            <div class="line"></div>
-                            <div class="dot" style="background:#ef4444;"></div>
-                        </div>
-                        <div class="locations">
-                            <div class="loc-text">${ride.from}</div>
-                            <div class="loc-text">${ride.to}</div>
-                        </div>
-                    </div>
-                    <div class="ride-footer">
-                        <div class="price-tag">Ask: ₹${ride.price}</div>
-                        <button class="connect-btn" onclick="openConnectModal()">Connect</button>
+                    <div style="font-size:0.8rem; color:#94a3b8; font-weight:700;">DRIVER: ${r.name}</div>
+                    <div style="margin:10px 0; font-weight:600;">${r.from} ➝ ${r.to}</div>
+                    <div class="footer">
+                        <div class="price">₹${r.price}</div>
+                        <button class="connect-btn" onclick="openConnect()">Connect</button>
                     </div>
                 </div>`;
-                container.innerHTML += card;
             });
+            document.getElementById('ride-list').innerHTML = html;
         }
 
-        // 6. CONNECTION MODALS
-        function openConnectModal() {
-            document.getElementById('connectModal').style.display = 'flex';
-        }
-        function closeModal() {
-            document.getElementById('connectModal').style.display = 'none';
+        // 3. SOUND & CONNECT
+        function openConnect() {
+            // PLAY SOUND
+            document.getElementById('alarm-sound').play().catch(e => console.log("Audio allowed only after interaction"));
+            document.getElementById('connect-modal').style.display = 'flex';
         }
 
+        // 4. CHAT FUNCTION
+        function openChat() {
+            closeModal('connect-modal');
+            document.getElementById('chat-modal').style.display = 'flex';
+        }
+
+        function sendMsg() {
+            var txt = document.getElementById('msg-input').value;
+            if(txt) {
+                var box = document.getElementById('chat-box');
+                box.innerHTML += `<div class="msg msg-out">${txt}</div>`;
+                document.getElementById('msg-input').value = "";
+                // Fake reply
+                setTimeout(() => {
+                    box.innerHTML += `<div class="msg msg-in">Okay, coming in 2 mins!</div>`;
+                    box.scrollTop = box.scrollHeight;
+                }, 1500);
+            }
+        }
+
+        // 5. PAYMENT FUNCTION
+        function openPayment() {
+            closeModal('connect-modal');
+            document.getElementById('pay-modal').style.display = 'flex';
+        }
+
+        function processPayment() {
+            document.getElementById('confirm-pay-btn').style.display = 'none';
+            document.getElementById('pay-loading').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('pay-loading').style.display = 'none';
+                document.getElementById('pay-success').style.display = 'block';
+                // Play sound again for success
+                document.getElementById('alarm-sound').play();
+            }, 2000);
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     </script>
 </body>
 </html>
